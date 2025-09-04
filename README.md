@@ -17,8 +17,13 @@ The provided RSS feed is checked once an hour and updates on-screen accordingly.
 
 ## Installation
 
-1. Download the package by clicking the green "Code" button to reveal the "Download Zip" option.
-2. When using Mercato's Digital Signage online manager, once you've created your "News" Campaign, upload this zip file as your 
+Please note that Mercato does not support zip files that contain folders. As such, a pre-compiled mercato-rss-reader.zip has been prepared for you. Just download this and you're good to go.
+
+1. Download the [mercato-rss-reader.zip](https://github.com/lina-operations/mercato-rss-reader/blob/main/mercato-rss-reader.zip). 
+You can either:
+- right-click the filename of mercato-rss-reader.zip to "Save File As"
+- follow the link to the file page. On the right-hand-side are three dots to indicate "More file actions". Clicking this exposes further options, the first is "Download". You can use this to download the file.
+2. When using Mercato's Digital Signage online manager, once you've created your "News" Campaign, upload this zip file as your Campaign's asset.
 
 ## Defaults
 
