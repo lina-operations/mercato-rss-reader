@@ -1,5 +1,5 @@
 {
-	"name": "Western Weekender RSS Feed",
+	"name": "Mercato RSS Feed v1",
 	"index": "index.html",
 	"width": 1200,
 	"height": 1920,
@@ -20,7 +20,8 @@
 			"default": "western-weekender-logo-rectangular-v3-600w.png",
 			"label": "Masthead (ensure height is 150px)",
 			"maxlength": 100,
-			"required": true,
+			"required": false,
+			"aspect": "1:1",
 			"type": "image"
 		},
 		"mds_rss_news_headlines_title": {
@@ -41,7 +42,7 @@
 			"default": "western-weekender-newsletter-signup-qr.png",
 			"label": "QR Code Image (400 x 400px)",
 			"maxlength": 100,
-			"required": true,
+			"required": false,
 			"aspect": "1:1",
 			"force_aspect": "true",
 			"type": "image"
