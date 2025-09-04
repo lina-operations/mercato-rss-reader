@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>News Headlines</title>
+	<style>
+		html,
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: white !important;
+			color: #000;
+			font-family: Arial, sans-serif;
+		}
+
+		h1 {
+			padding: 0 2rem;
+			font-size: 3rem;
+			text-align: center;
+		}
+
+		#news-container {
+			background-color: white !important;
+			padding: 0 2rem;
+		}
+
+		.news-item {
+			background-color: white !important;
+			padding: 1rem;
+			margin-bottom: 1.5rem;
+			border-bottom: 1px solid #ccc;
+			display: flex;
+			gap: 1rem;
+			align-items: center;
+		}
+
+		.news-image {
+			max-width: 300px;
+			max-height: 200px;
+			object-fit: cover;
+			flex-shrink: 0;
+			border-radius: 4px;
+			margin-right: 1rem;
+		}
+
+		.news-content {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			min-height: 200px;
+		}
+
+		.news-item h3 {
+			margin: 0 0 1rem 0;
+			font-size: 28px;
+			color: rgba(51, 126, 191, 0.78);
+			/* header color */
+		}
+
+		p {
+			margin: 0;
+			font-size: 20px;
+			line-height: 1.5rem;
+		}
+
+		a {
+			color: #0066cc;
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+
+		table {
+			width: 100%;
+		}
+
+		table td {
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+	<table>
+		<tr>
+			<td style="background-color: #0495da;" id="header">
+				<img id="masthead_image" src="" height="150" />
+			</td>
+		</tr>
+	</table>
+	<h1>News Headlines</h1>
+	<div id="news-container">Loading...</div>
+
+	<table>
+		<tr>
+			<td style="width: 50%; text-align: right;">
+				<h2 id="qr-code-cta" style="padding: 0 2rem; font-size: 1.8rem; float: right; max-width: 320px;">
+					Subscribe to our free weekly newsletter
+				</h2>
+			</td>
+			<td style="width: 50%; text-align: left;">
+				<img id="qrcode" src="" width="200" style="margin-left: 30px" />
+			</td>
+	</table>
+
+	<script>
+		const itemCount = 3;
+
+		async function fetchRSS(feed, mds_color_scheme) {
+			// Get the current hour in ISO format (YYYY-MM-DDTHH)
+			const hourString = (new Date()).toISOString().substring(0, 13);
+
+			// Append the hour to the feed URL to ensure content is refreshed every hour
+			const rssUrl = `${feed}?datetime=${hourString}`;
+
+			// Use a public RSS to JSON API to fetch the feed
+			const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+			try {
+				const response = await fetch(apiUrl);
+				const data = await response.json();
+
+				const newsContainer = document.getElementById('news-container');
+				newsContainer.innerHTML = '';
+
+				const items = data.items.slice(0, itemCount);
+
+				items.forEach(item => {
+					const imageUrl = item.thumbnail || (item.enclosure && item.enclosure.link) || '';
+
+					const article_description = getFirstSentenceOrExcerpt(item.description);
+
+					const div = document.createElement('div');
+					div.className = 'news-item';
+					div.innerHTML = `
+        ${imageUrl ? `<img class="news-image" src="${imageUrl}" alt="News image" />` : ''}
+        <div class="news-content">
+          <h3 style="color: ${mds_color_scheme}">${item.title}</h3>
+          <p>${article_description}</p>
+        </div>
+      `;
+					newsContainer.appendChild(div);
+				});
+			} catch (error) {
+				document.getElementById('news-container').innerText = 'Failed to load news.';
+				console.error(error);
+			}
+		}
+
+		function MDS(data) {
+			document.querySelector('h1').innerText = data.mds_rss_news_headlines_title || 'Loading...';
+			document.querySelector('#masthead_image').src = data.mds_rss_masthead_logo || 'western-weekender-logo-rectangular-v3-600w.png';
+			document.querySelector('h2#qr-code-cta').innerText = data.mds_rss_news_qr_code_title || 'Subscribe to our free weekly newsletter';
+			document.querySelector('#qrcode').src = data.mds_rss_news_qr_code || 'western-weekender-newsletter-signup-qr.png';
+			document.querySelector('#header').style.backgroundColor = data.mds_color_scheme;
+
+			fetchRSS(data.mds_rss_news_headlines_feed_url, data.mds_color_scheme);
+		}
+
+		if ((window.hasOwnProperty('MDS') && typeof window.MDS === 'function') === false) {
+			window.MDS = console.log;
+		}
+
+		const MDSGetDynamicData = () => {
+			const query = [window.location.search, window.location.hash.substr(1)].join('&');
+			if (query === '&') {
+				return MDS({
+					mds_rss_news_headlines_title: 'News Headlines',
+					mds_rss_news_headlines_feed_url: 'https://westernweekender.com.au/mercato/',
+					mds_rss_news_qr_code_title: 'Subscribe to our free weekly newsletter',
+					mds_rss_news_qr_code: 'western-weekender-newsletter-signup-qr.png',
+					mds_color_scheme: '#0066cc'
+				});
+			}
+
+			const params = new URLSearchParams(query);
+			const file = params.get('file');
+			const data = params.get('data');
+
+			if (file) {
+				return document.body.appendChild(document.createElement('script')).src = file;
+			}
+
+			if (data) {
+				return MDS(JSON.parse(atob(data)));
+			}
+
+			throw new Error('No dynamic data defined');
+		};
+
+		function getFirstSentenceOrExcerpt(str) {
+			const WORD_LIMIT = 20;
+
+			// Check if the string is more than 200 characters long
+			if (str.length > 200) {
+				const fullStopIndex = str.indexOf('.');
+
+				// Case 1: String is long and contains a full stop
+				if (fullStopIndex !== -1) {
+					return str.substring(0, fullStopIndex + 1);
+				} else {
+					// Case 2: String is long but has no full stop
+					const words = str.split(/\s+/); // Split by one or more whitespace characters
+
+					// If there are 20 words or fewer, return the whole string as is (no truncation needed)
+					if (words.length <= WORD_LIMIT) {
+						return str;
+					}
+
+					// Reconstruct the string from the first WORD_LIMIT words
+					const excerptWords = words.slice(0, WORD_LIMIT);
+					let excerpt = excerptWords.join(' ');
+
+					// Add "..." to the end
+					excerpt += '...';
+
+					return excerpt;
+				}
+			}
+
+			// Case 3: String is 200 characters or less (return original string)
+			return str;
+		}
+
+		document.addEventListener('DOMContentLoaded', MDSGetDynamicData);
+		window.addEventListener('hashchange', MDSGetDynamicData);
+	</script>
+</body>
+
+</html>

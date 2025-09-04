@@ -1,0 +1,68 @@
+{
+	"name": "Western Weekender RSS Feed",
+	"index": "index.html",
+	"width": 1200,
+	"height": 1920,
+	"sizes": [
+		{
+			"height": 1920,
+			"width": 1200,
+			"title": "Portrait"
+		},
+		{
+			"height": 1200,
+			"width": 1920,
+			"title": "Landscape"
+		}
+	],
+	"fields": {
+		"mds_rss_masthead_logo": {
+			"default": "western-weekender-logo-rectangular-v3-600w.png",
+			"label": "Masthead (ensure height is 150px)",
+			"maxlength": 100,
+			"required": true,
+			"type": "image"
+		},
+		"mds_rss_news_headlines_title": {
+			"default": "News Headlines",
+			"label": "Heading",
+			"maxlength": 100,
+			"required": true,
+			"type": "text"
+		},
+		"mds_rss_news_headlines_feed_url": {
+			"default": "https://westernweekender.com.au/mercato/",
+			"label": "RSS Feed",
+			"maxlength": 100,
+			"required": true,
+			"type": "text"
+		},
+		"mds_rss_news_qr_code": {
+			"default": "western-weekender-newsletter-signup-qr.png",
+			"label": "QR Code Image (400 x 400px)",
+			"maxlength": 100,
+			"required": true,
+			"aspect": "1:1",
+			"force_aspect": "true",
+			"type": "image"
+		},
+		"mds_rss_news_qr_code_title": {
+			"default": "Subscribe to our free weekly newsletter",
+			"label": "QR Code Subscribe Call-to-Action",
+			"maxlength": 100,
+			"required": true,
+			"type": "text"
+		},
+		"mds_color_scheme": {
+			"default": "#0495da",
+			"label": "Header background and Article title colour (hex code, eg #000000)",
+			"maxlength": 7,
+			"required": true,
+			"type": "text"
+		}
+	},
+	"preview": {
+		"mds_rss_news_headlines_title": "News Headlines",
+		"mds_rss_news_headlines_feed_url": "https://westernweekender.com.au/mercato/"
+	}
+}
